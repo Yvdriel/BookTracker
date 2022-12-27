@@ -14,6 +14,7 @@ export const useBooksStore = defineStore('books', {
       subtitle: '',
       publishers: {},
       number_of_pages: 0,
+      status: '',
     },
     loading: false,
   }),
@@ -28,6 +29,7 @@ export const useBooksStore = defineStore('books', {
         subtitle: '',
         publishers: {},
         number_of_pages: 0,
+        status: '',
       };
 
       api_service.get('/isbn/' + isbn + '.json')
@@ -85,5 +87,22 @@ export const useBooksStore = defineStore('books', {
         position: 'top',
       });
     },
+    getBooksByStatus() {
+      const books_by_status = {
+        reading: {},
+        no_status: {},
+        finished: {},
+      };
+      for (const [key, value] of Object.entries(this.books)) {
+        if (value.status == '') {
+          books_by_status.no_status[key] = value;
+          continue;
+        }
+
+        books_by_status[value.status as keyof typeof books_by_status][key] = value;
+      }
+
+      return books_by_status;
+    }
   },
 });
